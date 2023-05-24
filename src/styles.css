@@ -1,0 +1,29 @@
+.App {
+  text-align: center;
+  font-family: "Get Schwifty", Arial, sans-serif;
+  font-size: 24px;
+}
+body {
+  background-color: black;
+  color: white;
+  font-size: 0.9vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+table th {
+  border: 1px solid #fdfeb4;
+  font-weight: 600;
+}
+table {
+  border: 1px solid #43a93e;
+}
+#root > div > section > table > tbody td {
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+  border: 1px solid #fff8c5;
+}
+@font-face {
+  font-family: "Get Schwifty";
+  src: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/3089507/get-schwifty.woff")
+    format("woff");
+}
