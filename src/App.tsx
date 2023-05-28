@@ -1,11 +1,22 @@
 import "./styles.css";
-import { residentsOfLocation } from "./Client";
+import { residentsOfLocation, charactersPopularity } from "./Client";
 import { Graph } from "./Graph";
 import useSWR from "swr";
 
 export default function App() {
   const { data, isLoading } = useSWR("1", residentsOfLocation);
+  const { data: popularityCounts, isLoading: isPopularityLoading } = useSWR(
+    [
+      "Abradolf Lincler",
+      "Arcade Alien",
+      "Morty Smith",
+      "Birdperson",
+      "Mr. Meeseeks"
+    ],
+    charactersPopularity
+  );
 
+  const leastPopularCharacter = data?.slice(-1)[0];
   return (
     <div className="App">
       <h1>Rick and Morty Stats</h1>
@@ -15,46 +26,51 @@ export default function App() {
       <section>
         <h2>Least popular Characters</h2>
         {isLoading && "loading character episode info"}
-        {!isLoading && data && (
+        {!isLoading && leastPopularCharacter && (
           <table>
-            <thead>
+            <tbody>
+              <tr>
+                <td rowSpan={7}>
+                  <img
+                    style={{ height: "12rem" }}
+                    src={leastPopularCharacter.image}
+                    alt="character avatar"
+                  />
+                </td>
+              </tr>
               <tr>
                 <th>Character Name</th>
-                <th>Origin & Dimension</th>
-                <th>Status</th>
-                <th>Species</th>
-                <th>Gender</th>
-                <th>Popularity</th>
+                <td>{leastPopularCharacter.name}</td>
               </tr>
-            </thead>
-            <tbody>
-              {data.map((character) => {
-                return (
-                  <tr key={character.id}>
-                    <td>{character.name}</td>
-                    <td>{character.origin.name}</td>
-                    <td>{character.status}</td>
-                    <td>{character.species}</td>
-                    <td>{character.gender}</td>
-                    <td>{character.episode.length}</td>
-                  </tr>
-                );
-              })}
+              <tr>
+                <th>Origin & Dimension</th>
+                <td>{leastPopularCharacter.origin.name}</td>
+              </tr>
+              <tr>
+                <th>Status</th>
+                <td>{leastPopularCharacter.status}</td>
+              </tr>
+              <tr>
+                <th>Species</th>
+                <td>{leastPopularCharacter.species}</td>
+              </tr>
+              <tr>
+                <th>Gender</th>
+                <td>{leastPopularCharacter.gender}</td>
+              </tr>
+              <tr>
+                <th>Popularity</th>
+                <td>{leastPopularCharacter.episode.length}</td>
+              </tr>
             </tbody>
           </table>
         )}
       </section>
       <section>
         <h2>Selected Character Popularity Graph</h2>
-        <Graph
-          characters={[
-            { name: "Abradolf Lincler", popularity: 3 },
-            { name: "Arcade Alien", popularity: 5 },
-            { name: "Morty Smith", popularity: 51 },
-            { name: "Birdperson", popularity: 8 },
-            { name: "Mr. Meeseeks", popularity: 6 }
-          ]}
-        />
+        {!isPopularityLoading && popularityCounts && (
+          <Graph characters={popularityCounts} />
+        )}
       </section>
     </div>
   );
